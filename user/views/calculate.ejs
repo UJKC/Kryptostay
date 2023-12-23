@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking</title>
+    <script href="try.js">
+    </script>
+    <style>
+        body {
+            background-color: #211f17;
+            color: black;
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        h1,
+        h2,
+        h3 {
+            margin: 0;
+        }
+
+        #hotel-info,
+        #room-booking {
+            background-color: #e0cda1;
+            width:50%;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: black;
+        }
+
+        input {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 4px;
+            width: calc(100% - 20px);
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: black;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #final-cost {
+            margin-top: 20px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+<center>
+    <h1 >Hotel Information and Booking</h1>
+    <br>
+
+    <div id="hotel-info">
+        <!-- Display hotel information here -->
+        <h2>Hotel Information</h2>
+        <p id="hotel-name-id">Hotel Name: <%= hotel._id %>
+        </p>
+        <p id="hotel-name">Hotel Name: <%= hotel.hotelName %>
+        </p>
+        <p id="location">City: <%= hotel.location.city %>
+        </p>
+        <p id="location">State: <%= hotel.location.state %>
+        </p>
+        <p id="location">Country: <%= hotel.location.country %>
+        </p>
+        <p id="location">ZipCode: <%= hotel.location.zipCode %>
+        </p>
+        <p id="contact">Contact Email: <%= hotel.contact.email %>
+        </p>
+        <p id="contact">Contact Phone: <%= hotel.contact.phone %>
+        </p>
+        <p id="policies">Policies CheckIn time: <%= hotel.policies.checkInTime %>
+        </p>
+        <p id="policies">Policies CheckOut time: <%= hotel.policies.checkOutTime %>
+        </p>
+        <p id="policies">Policies CancellationPolicy: <%= hotel.policies.cancellationPolicy %>
+        </p>
+    </div>
+
+    <div id="room-booking">
+        <!-- Room booking form -->
+        <h2>Room Booking</h2>
+
+        <!-- Display room types and buttons to increase quantity -->
+        <div id="room-types">
+            <h3>Room Types</h3>
+            <div id="room-buttons"></div>
+        </div>
+
+        <!-- Input for number of rooms, days, and dates -->
+        <label for="num-rooms">Number of Rooms:</label>
+        <input type="number" id="num-rooms" min="1">
+
+        <label for="num-days">Number of Days:</label>
+        <input type="number" id="num-days" min="1">
+
+        <label for="start-date">Start Date:</label>
+        <input type="date" id="start-date">
+
+        <label for="end-date">End Date:</label>
+        <input type="date" id="end-date">
+
+        <!-- Display final cost -->
+        <p id="final-cost">Final Cost: $0</p>
+
+        <!-- Button to pay -->
+        <button onclick="pay()">Calculate</button>
+<br><br>
+        <a href="http://localhost:3002/transaction"><button>Pay</button></a>
+    </div>
+</center>
+<script>
+    function pay() {
+        // Get input values
+        const numRooms = parseInt(document.getElementById('num-rooms').value);
+        const numDays = parseInt(document.getElementById('num-days').value);
+        const startDate = new Date(document.getElementById('start-date').value);
+        const endDate = new Date(document.getElementById('end-date').value);
+
+        // Calculate total days
+        const oneDay = 24 * 60 * 60 * 1000; // hours*minutes*seconds*milliseconds
+        const totalDays = Math.round(Math.abs((startDate - endDate) / oneDay));
+
+        // Calculate cost (assuming cost per room per day is $100)
+        const costPerRoomPerDay =  <%= hotel.roomTypes[1-1].costPerNight %>;
+        const totalCost = numRooms * numDays * costPerRoomPerDay;
+
+        // Display final cost
+        document.getElementById('final-cost').textContent = `Final Cost: $${totalCost} `;
+        console.log(totalCost);
+
+        const hotelIdElement = document.getElementById('hotel-name-id');
+    const hotelId = hotelIdElement.textContent.trim(); // Extract hotel ID content
+
+        const dataToSend = {
+            hotelId: hotelId,
+        numRooms: numRooms,
+        numDays: numDays,
+        startDate: startDate.toISOString(), // Convert date to ISO string for sending
+        endDate: endDate.toISOString(), // Convert date to ISO string for sending
+        totalCost: totalCost
+        // You can add more data as needed
+    };
+
+    // Send data to the endpoint
+    fetch('http://localhost:3002/hoteltransaction', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dataToSend)
+    })
+    .then(response => {
+        if (response.ok) {
+            // Handle success
+            console.log('Transaction successful!');
+        } else {
+            // Handle error
+            console.error('Transaction failed.');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+    }
+</script>
+</body>
+
+</html>

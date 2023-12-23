@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Our Hotels</title>
+</head>
+<style>
+    .container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      background-color: #2d2b24;
+      color:white;
+      /* Slightly lighter background color for the form */
+    }
+</style>
+<script>
+    const addressBalance = '<%= addressBalance %>';
+
+    // Update the HTML element with the received addressBalance value
+    const addressBalanceElement = document.getElementById('addressBalanceValue');
+    if (addressBalanceElement) {
+      if (addressBalance) {
+        addressBalanceElement.textContent = `Address Balance: ${addressBalance}`;
+      } else {
+        addressBalanceElement.textContent = 'No address balance provided.';
+      }
+    }
+  </script>
+<body bgcolor="black">
+    <center><h1 style="color:white;font-size:60px">OUR HOTELS</h1></center>
+    <p id="addressBalanceValue">Loading...</p>
+    <ul>
+        <% data.forEach(item => { %>
+            <li class="container">
+                <div style="display:flex;"><div>
+                    <img src="https://www.shutterstock.com/image-vector/hotel-vector-illustration-simple-black-600nw-1734818867.jpg" alt="img" width="300px" height="300px">
+                </div>
+                &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+            <div>
+              <strong>Hotel-ID: </strong> <%= item._id %><br>
+                <strong>Name: </strong> <%= item.hotelName %><br>
+                <strong>Location: </strong> <%= item.location.city %>,<%= item.location.state %>,<%= item.location.country %>,<%= item.location.pincode %><br>
+                <strong>Phone: </strong> <%= item.contact.phone %>,<br>
+                <strong>Email: </strong> <%= item.contact.email %><br>
+                <strong>Room: </strong>
+                <ul> <!-- Nested list for rooms -->
+                    <% item.roomTypes.forEach(room => { %>
+                      <strong>Type: </strong> <%= room.type %><br>
+                        <strong>Capacity: </strong> <%= room.capacity %><br>
+                        <strong>Cost: </strong> <%= room.costPerNight %><br>
+                        <% }); %>
+                </ul>
+                <strong>Services:</strong>
+                        <ul> <!-- Nested list for rooms -->
+                          <% item.services.forEach(ser => { %>
+                            <strong>Name: </strong> <%= ser.name %><br>
+                            <strong>Description: </strong> <%= ser.description %><br>
+                            <strong>Cost: </strong> <%= ser.cost %><br>
+                            <% }); %>
+                        </ul>
+                  
+                        <strong>Amenities: </strong> <%= item.amenities %><br>
+                        <strong>Check-In Time: </strong> <%= item.policies.checkInTime %><br>       
+                        <strong>Check-Out Time: </strong> <%= item.policies.checkOutTime %><br>  
+                        <strong>Cancellation: </strong> <%= item.policies.cancellationPolicy %><br>  
+                    <% }); %>
+                  </ul>
+            </li>
+        </div>
+    </div>
+    
+    </ul>
+    <form id="hotelIdForm" method="GET">
+      <label for="hotelid">Enter Hotel ID:</label>
+      <input type="text" id="hotelid" name="hotelid" required>
+      <button type="submit">Submit</button>
+  </form>
+  
+  <script>
+      document.getElementById('hotelIdForm').addEventListener('submit', function(event) {
+          event.preventDefault(); // Prevent default form submission
+          
+          const userInput = document.getElementById('hotelid').value;
+          const formAction = `/${userInput}/hotel/view`; // Construct the desired URL
+          
+          window.location.href = formAction; // Redirect to the constructed URL
+      });
+  </script>
+  
+</body>
+</html>

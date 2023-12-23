@@ -1,0 +1,20 @@
+<!-- views/id.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel ID Page</title>
+</head>
+<body>
+  <h1>Hotel ID Page</h1>
+  <p id="hotelIdDisplay">Hotel ID: <%= hotel.hotelid %></p>
+  <!-- Display other hotel properties as needed -->
+
+  <script>
+    // JavaScript code to store hotelid in a variable
+    const hotelId = '<%= hotel.hotelid %>';
+    console.log('Hotel ID stored in variable:', hotelId);
+  </script>
+</body>
+</html>
